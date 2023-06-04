@@ -1,0 +1,183 @@
+#include<Wire.h>
+#include<LiquidCrystal_I2C.h>
+#include <Servo.h>  
+Servo servo1;
+LiquidCrystal_I2C lcd(0x27,16,2);
+int IRSensor = 2;
+int IRSensor2 = 3;
+int IRSensor3 = 4;
+int led=13;
+// Define pins for ultrasonic and buzzer
+int const trigPin = 10;
+int const echoPin = 9;
+//int const trigPin2 = 6;//outgoing
+//int const echoPin2 =7 ;
+int const buzzPin = 5;
+long duration1;//duration2;
+int distance1;//distance2;
+int safetyDistance1;//safetyDistance2;
+
+void setup()
+{
+  servo1.attach(11); 
+  pinMode(IRSensor,INPUT);
+  pinMode(IRSensor2,INPUT);
+  pinMode(IRSensor3,INPUT);
+ /* pinMode(trigPin, OUTPUT); // trig pin will have pulses output
+pinMode(echoPin, INPUT); // echo pin should be input to get pulse width
+pinMode(buzzPin, OUTPUT); // buzz pin is output to control buzzering*/
+pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+//pinMode(trigPin2, OUTPUT); // Sets the trigPin as an Output
+//pinMode(echoPin2, INPUT); // Sets the echoPin as an Input
+pinMode(buzzPin, OUTPUT);
+
+
+  lcd.begin();
+
+  lcd.backlight();
+  lcd.clear();
+    lcd.setCursor(2,0);
+    lcd.print("Smart Parking ");
+    lcd.setCursor(0,1);
+    lcd.print("Free:");
+    pinMode (led, OUTPUT); // Led pin OUTPUT
+    Serial.begin(9600);
+  }
+  
+
+ void loop()
+ {
+  
+  int statusSensor = digitalRead(IRSensor);
+  int statusSensor2 = digitalRead(IRSensor2);
+  int statusSensor3 = digitalRead(IRSensor3);
+  
+// Clears the trigPin
+digitalWrite(trigPin, LOW);
+delayMicroseconds(2);
+//digitalWrite(trigPin2, LOW);
+//delayMicroseconds(2);
+
+// Sets the trigPin on HIGH state for 10 micro seconds
+digitalWrite(trigPin, HIGH);
+delayMicroseconds(10);
+digitalWrite(trigPin, LOW);
+//digitalWrite(trigPin2, HIGH);
+//delayMicroseconds(10);
+//digitalWrite(trigPin2, LOW);
+
+// Reads the echoPin, returns the sound wave travel time in microseconds
+duration1 = pulseIn(echoPin, HIGH);
+//duration2 = pulseIn(echoPin2, HIGH);
+
+// Calculating the distance
+distance1= duration1*0.034/2;
+Serial.print("Distance Incoming: ");
+Serial.println(distance1);
+delay(10);
+//distance2= duration2*0.034/2;
+//Serial.print("Distance Outgoing: ");
+//Serial.println(distance2);
+//delay(10);
+
+safetyDistance1 = distance1;
+//safetyDistance2 = distance2;
+if (safetyDistance1 <= 12){
+  digitalWrite(buzzPin, HIGH);
+ // delay(10);
+  
+}
+else{
+  digitalWrite(buzzPin, LOW);
+  
+}
+ /*if (safetyDistance2 <= 10){
+  digitalWrite(buzzPin, HIGH);
+  delay(20);
+  
+}
+else{
+  digitalWrite(buzzPin, LOW);
+  
+}*/
+
+// Prints the distance on the Serial Monitor
+if(statusSensor3==0 && statusSensor2==0 && statusSensor==0){
+  servo1.write(0);
+  delay(2000);}
+ else{
+servo1.write(0);
+  if(distance1 < 15){
+  servo1.write(90);
+  delay(2000);}
+  if(distance1 > 15){
+  servo1.write(0);
+  delay(2000);}
+  //else
+  //{servo1.write(0);
+  //}
+ }
+//if(statusSensor3==0&&statusSensor2==0&&statusSensor==0)
+//  {
+//    digitalWrite(led,HIGH);
+//    Serial.println("FULL");
+//    lcd.clear();
+//    lcd.setCursor(-1,0);
+//    lcd.print("ALL SLOTS ");
+//    lcd.setCursor(-1,1);
+//    lcd.print("ARE FILLED ");
+//    delay(100);
+//  }
+  //lcd.clear();
+  
+
+  if(statusSensor==1)
+  {
+    
+    digitalWrite(led,LOW);
+    Serial.println("SLOT 1 FREE");
+    lcd.setCursor(7,1);
+    lcd.print("1");
+  }
+   if(statusSensor==0)
+  {
+    digitalWrite(led,HIGH);
+    Serial.println("SLOT 1 OCCUPIED");
+    lcd.setCursor(7,1);
+    lcd.print(" ");
+    delay(100);
+  }
+   if(statusSensor2==1)
+  {
+    digitalWrite(led,LOW);
+    Serial.println("SLOT 2 FREE");
+    lcd.setCursor(10,1);
+    lcd.print("2");
+  }
+   if(statusSensor2==0)
+  {
+    digitalWrite(led,HIGH);
+    Serial.println("SLOT 2 OCCUPIED");
+    lcd.setCursor(10,1);
+    lcd.print(" ");
+    delay(100);
+  }
+  if(statusSensor3==1)
+  {
+    digitalWrite(led,LOW);
+    Serial.println("SLOT 3 FREE ");
+    lcd.setCursor(13,1);
+    lcd.print("3");
+  }
+   if(statusSensor3==0)
+  {
+    digitalWrite(led,HIGH);
+    Serial.println("SLOT 3 OCCUPIED");
+    lcd.setCursor(13,1);
+    lcd.print(" ");
+    delay(100);
+  }
+
+
+ }
