@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Parking System</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <h1>Smart Parking System</h1>
+  
+  <div id="parking-lot">
+    <div class="spot empty"></div>
+    <div class="spot"></div>
+    <div class="spot"></div>
+    <div class="spot empty"></div>
+    <div class="spot"></div>
+    <div class="spot empty"></div>
+    <div class="spot"></div>
+    <div class="spot"></div>
+    <div class="spot empty"></div>
+  </div>
+  
+  <button id="park-btn">Park</button>
+  <button id="leave-btn">Leave</button>
+  
+  <script src="script.js"></script>
+</body>
+</html>
