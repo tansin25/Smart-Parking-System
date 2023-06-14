@@ -1,0 +1,34 @@
+document.addEventListener('DOMContentLoaded', function() {
+  const spots = document.getElementsByClassName('spot');
+  
+  // Set up event listeners for parking and leaving buttons
+  document.getElementById('park-btn').addEventListener('click', function() {
+    parkCar();
+  });
+  
+  document.getElementById('leave-btn').addEventListener('click', function() {
+    leaveCar();
+  });
+  
+  function parkCar() {
+    for (let i = 0; i < spots.length; i++) {
+      if (spots[i].classList.contains('empty')) {
+        spots[i].classList.remove('empty');
+        alert('Car parked in spot ' + (i + 1));
+        return;
+      }
+    }
+    alert('No available spots.');
+  }
+  
+  function leaveCar() {
+    for (let i = 0; i < spots.length; i++) {
+      if (!spots[i].classList.contains('empty')) {
+        spots[i].classList.add('empty');
+        alert('Car left from spot ' + (i + 1));
+        return;
+      }
+    }
+    alert('No cars to leave.');
+  }
+});
